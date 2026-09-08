@@ -1,0 +1,48 @@
+@extends('layouts.app')
+
+@section('title', 'Crear juego')
+
+@section('content')
+    <div class="mx-auto max-w-2xl rounded-3xl border border-slate-800 bg-slate-900/70 p-8 shadow-2xl shadow-slate-950/50">
+        <h1 class="mb-6 text-3xl font-bold text-white">Registrar juego</h1>
+
+        @if($errors->any())
+            <div class="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+                <ul class="list-disc space-y-1 pl-5">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('juegos.store') }}" method="POST" class="space-y-5">
+            @csrf
+
+            <div>
+                <label for="titulo" class="mb-2 block text-sm font-medium text-slate-200">Título</label>
+                <input type="text" id="titulo" name="titulo" value="{{ old('titulo') }}" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-cyan-400">
+            </div>
+
+            <div>
+                <label for="anio" class="mb-2 block text-sm font-medium text-slate-200">Año</label>
+                <input type="number" id="anio" name="anio" value="{{ old('anio') }}" min="1900" max="2100" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-cyan-400">
+            </div>
+
+            <div>
+                <label for="idioma_id" class="mb-2 block text-sm font-medium text-slate-200">Idioma</label>
+                <select id="idioma_id" name="idioma_id" required class="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-cyan-400">
+                    <option value="">Selecciona un idioma</option>
+                    @foreach($idiomas as $idioma)
+                        <option value="{{ $idioma->id }}" {{ old('idioma_id') == $idioma->id ? 'selected' : '' }}>{{ $idioma->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-400">Guardar</button>
+                <a href="{{ route('juegos.index') }}" class="rounded-xl border border-slate-700 bg-slate-800 px-5 py-3 font-medium text-slate-200 transition hover:border-slate-500">Cancelar</a>
+            </div>
+        </form>
+    </div>
+@endsection
