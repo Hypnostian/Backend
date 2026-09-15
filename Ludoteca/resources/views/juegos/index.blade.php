@@ -19,7 +19,7 @@
                     <span class="text-xs text-slate-400">#{{ $juego->id }}</span>
                 </div>
                 <h2 class="mt-4 text-2xl font-bold text-white">{{ $juego->titulo }}</h2>
-                <p class="mt-2 text-sm text-slate-300">Idioma base: <span class="font-medium text-cyan-300">{{ $juego->idioma }}</span></p>
+                <p class="mt-2 text-sm text-slate-300">Idioma base: <span class="font-medium text-cyan-300">{{ $juego->idioma->nombre }}</span></p>
 
                 <div class="mt-6 flex gap-3">
                     <a href="{{ route('juegos.show', $juego->id) }}" class="rounded-xl bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700">Ver</a>

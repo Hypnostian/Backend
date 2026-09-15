@@ -9,13 +9,13 @@
                 <p class="text-sm uppercase tracking-[0.25em] text-cyan-300">Expansión</p>
                 <h1 class="mt-2 text-3xl font-bold text-white">{{ $expansion->titulo }}</h1>
             </div>
-            <span class="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1 text-sm font-medium text-fuchsia-200">{{ $expansion->idioma }}</span>
+            <span class="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1 text-sm font-medium text-fuchsia-200">{{ $expansion->idioma->nombre }}</span>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2">
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
                 <p class="text-sm text-slate-400">Juego base</p>
-                <p class="mt-2 text-xl font-semibold text-cyan-300">{{ $expansion->juego_base }}</p>
+                <p class="mt-2 text-xl font-semibold text-cyan-300">{{ $expansion->juego->titulo }}</p>
             </div>
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
                 <p class="text-sm text-slate-400">ID</p>

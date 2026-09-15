@@ -30,8 +30,8 @@
                     <a href="{{ route('expansiones.index') }}" class="transition hover:text-cyan-300">Expansiones</a>
                 </div>
 
-                <a href="{{ route('idiomas.create') }}" class="inline-flex items-center rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:bg-cyan-400">
-                    + Nuevo idioma
+                <a href="{{ route('juegos.search') }}" class="inline-flex items-center rounded-full bg-cyan-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:bg-cyan-400">
+                    Buscar
                 </a>
             </div>
         </div>

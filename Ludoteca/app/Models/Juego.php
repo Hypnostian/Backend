@@ -2,55 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Juego
+class Juego extends Model
 {
     protected $table = 'juegos';
-    public $timestamps = true;
     protected $fillable = ['titulo', 'anio', 'idioma_id'];
 
-    public static function all()
+    public function idioma(): BelongsTo
     {
-        return DB::table('juegos as j')
-            ->join('idiomas as i', 'i.id', '=', 'j.idioma_id')
-            ->select('j.id', 'j.titulo', 'j.anio', 'i.nombre as idioma')
-            ->orderBy('j.titulo')
-            ->get();
+        return $this->belongsTo(Idioma::class, 'idioma_id');
     }
 
-    public static function find($id)
+    public function expansiones(): HasMany
     {
-        return DB::table('juegos as j')
-            ->join('idiomas as i', 'i.id', '=', 'j.idioma_id')
-            ->select('j.id', 'j.titulo', 'j.anio', 'j.idioma_id', 'i.nombre as idioma')
-            ->where('j.id', $id)
-            ->first();
-    }
-
-    public static function create(array $datos)
-    {
-        return DB::table('juegos')->insertGetId([
-            'titulo' => $datos['titulo'] ?? null,
-            'anio' => $datos['anio'] ?? null,
-            'idioma_id' => $datos['idioma_id'] ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    }
-
-    public static function update($id, array $datos)
-    {
-        return DB::table('juegos')->where('id', $id)->update([
-            'titulo' => $datos['titulo'] ?? null,
-            'anio' => $datos['anio'] ?? null,
-            'idioma_id' => $datos['idioma_id'] ?? null,
-            'updated_at' => now(),
-        ]);
-    }
-
-    public static function destroy($id)
-    {
-        return DB::table('juegos')->where('id', $id)->delete();
+        return $this->hasMany(Expansion::class, 'juego_id');
     }
 }

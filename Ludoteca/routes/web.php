@@ -10,5 +10,6 @@ Route::get('/', function () {
 })->name('home');
 
 Route::resource('idiomas', IdiomaController::class);
+Route::get('/juegos/buscar', [JuegoController::class, 'search'])->name('juegos.search');
 Route::resource('juegos', JuegoController::class);
 Route::resource('expansiones', ExpansionController::class);

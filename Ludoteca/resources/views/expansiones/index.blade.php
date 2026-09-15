@@ -15,11 +15,11 @@
         @forelse($expansiones as $expansion)
             <div class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-lg shadow-slate-950/40 transition hover:-translate-y-1 hover:border-cyan-400/40">
                 <div class="flex items-center justify-between gap-3">
-                    <span class="rounded-full bg-fuchsia-500/10 px-2.5 py-1 text-xs font-medium uppercase tracking-[0.2em] text-fuchsia-200">{{ $expansion->idioma }}</span>
+                    <span class="rounded-full bg-fuchsia-500/10 px-2.5 py-1 text-xs font-medium uppercase tracking-[0.2em] text-fuchsia-200">{{ $expansion->idioma->nombre }}</span>
                     <span class="text-xs text-slate-400">#{{ $expansion->id }}</span>
                 </div>
                 <h2 class="mt-4 text-2xl font-bold text-white">{{ $expansion->titulo }}</h2>
-                <p class="mt-2 text-sm text-slate-300">Base: <span class="font-medium text-cyan-300">{{ $expansion->juego_base }}</span></p>
+                <p class="mt-2 text-sm text-slate-300">Base: <span class="font-medium text-cyan-300">{{ $expansion->juego->titulo }}</span></p>
 
                 <div class="mt-6 flex gap-3">
                     <a href="{{ route('expansiones.show', $expansion->id) }}" class="rounded-xl bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700">Ver</a>

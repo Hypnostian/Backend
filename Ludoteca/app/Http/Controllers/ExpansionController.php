@@ -11,26 +11,22 @@ class ExpansionController extends Controller
 {
     public function index()
     {
-        $expansiones = Expansion::all();
+        $expansiones = Expansion::with(['juego', 'idioma'])->orderBy('titulo')->get();
 
         return view('expansiones.index', compact('expansiones'));
     }
 
-    public function show($id)
+    public function show(Expansion $expansion)
     {
-        $expansion = Expansion::find($id);
-
-        if (! $expansion) {
-            abort(404, 'Expansión no encontrada');
-        }
+        $expansion->load(['juego', 'idioma']);
 
         return view('expansiones.show', compact('expansion'));
     }
 
     public function create()
     {
-        $juegos = Juego::all();
-        $idiomas = Idioma::all();
+        $juegos = Juego::orderBy('titulo')->get();
+        $idiomas = Idioma::orderBy('nombre')->get();
 
         return view('expansiones.create', compact('juegos', 'idiomas'));
     }
@@ -48,20 +44,15 @@ class ExpansionController extends Controller
         return redirect()->route('expansiones.index')->with('success', 'Expansión creada correctamente');
     }
 
-    public function edit($id)
+    public function edit(Expansion $expansion)
     {
-        $expansion = Expansion::find($id);
-        $juegos = Juego::all();
-        $idiomas = Idioma::all();
-
-        if (! $expansion) {
-            abort(404, 'Expansión no encontrada');
-        }
+        $juegos = Juego::orderBy('titulo')->get();
+        $idiomas = Idioma::orderBy('nombre')->get();
 
         return view('expansiones.edit', compact('expansion', 'juegos', 'idiomas'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Expansion $expansion)
     {
         $request->validate([
             'titulo' => 'required|string|max:100',
@@ -69,14 +60,14 @@ class ExpansionController extends Controller
             'idioma_id' => 'required|integer|exists:idiomas,id',
         ]);
 
-        Expansion::update($id, $request->only(['juego_id', 'titulo', 'idioma_id']));
+        $expansion->update($request->only(['juego_id', 'titulo', 'idioma_id']));
 
-        return redirect()->route('expansiones.show', $id)->with('success', 'Expansión actualizada correctamente');
+        return redirect()->route('expansiones.show', $expansion)->with('success', 'Expansión actualizada correctamente');
     }
 
-    public function destroy($id)
+    public function destroy(Expansion $expansion)
     {
-        Expansion::destroy($id);
+        $expansion->delete();
 
         return redirect()->route('expansiones.index')->with('success', 'Expansión eliminada correctamente');
     }

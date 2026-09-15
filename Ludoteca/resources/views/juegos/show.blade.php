@@ -15,7 +15,7 @@
         <div class="grid gap-6 sm:grid-cols-2">
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
                 <p class="text-sm text-slate-400">Idioma principal</p>
-                <p class="mt-2 text-xl font-semibold text-cyan-300">{{ $juego->idioma }}</p>
+                <p class="mt-2 text-xl font-semibold text-cyan-300">{{ $juego->idioma->nombre }}</p>
             </div>
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
                 <p class="text-sm text-slate-400">ID</p>

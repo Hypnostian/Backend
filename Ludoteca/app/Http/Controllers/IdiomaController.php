@@ -9,19 +9,13 @@ class IdiomaController extends Controller
 {
     public function index()
     {
-        $idiomas = Idioma::all();
+        $idiomas = Idioma::orderBy('nombre')->get();
 
         return view('idiomas.index', compact('idiomas'));
     }
 
-    public function show($id)
+    public function show(Idioma $idioma)
     {
-        $idioma = Idioma::find($id);
-
-        if (! $idioma) {
-            abort(404, 'Idioma no encontrado');
-        }
-
         return view('idiomas.show', compact('idioma'));
     }
 
@@ -42,32 +36,26 @@ class IdiomaController extends Controller
         return redirect()->route('idiomas.index')->with('success', 'Idioma creado correctamente');
     }
 
-    public function edit($id)
+    public function edit(Idioma $idioma)
     {
-        $idioma = Idioma::find($id);
-
-        if (! $idioma) {
-            abort(404, 'Idioma no encontrado');
-        }
-
         return view('idiomas.edit', compact('idioma'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Idioma $idioma)
     {
         $request->validate([
             'nombre' => 'required|string|max:50',
             'codigo' => 'required|string|max:5',
         ]);
 
-        Idioma::update($id, $request->only(['nombre', 'codigo']));
+        $idioma->update($request->only(['nombre', 'codigo']));
 
-        return redirect()->route('idiomas.show', $id)->with('success', 'Idioma actualizado correctamente');
+        return redirect()->route('idiomas.show', $idioma)->with('success', 'Idioma actualizado correctamente');
     }
 
-    public function destroy($id)
+    public function destroy(Idioma $idioma)
     {
-        Idioma::destroy($id);
+        $idioma->delete();
 
         return redirect()->route('idiomas.index')->with('success', 'Idioma eliminado correctamente');
     }
