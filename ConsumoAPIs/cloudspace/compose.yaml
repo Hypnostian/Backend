@@ -1,0 +1,80 @@
+# Entorno Docker (Laravel Sail) del taller Consumo de APIs (CloudSpace Solutions).
+#
+# Funciona igual desde Ubuntu en WSL (`./vendor/bin/sail up -d`) y desde
+# Windows (PowerShell: `docker compose up -d`) contra el mismo Docker Desktop.
+# Los puertos por defecto (8082, 3309, 5176) no chocan con los de los otros talleres.
+#
+# El servicio stripe-cli usa STRIPE_SECRET para escuchar los eventos de la cuenta de
+# prueba de Stripe y reenviarlos al webhook de la aplicación dentro de la red de Docker.
+name: cloudspace
+
+services:
+    laravel.test:
+        build:
+            context: './vendor/laravel/sail/runtimes/8.5'
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP:-1000}'
+        image: 'sail-8.5/app'
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '${APP_PORT:-8082}:80'
+            - '${VITE_PORT:-5176}:${VITE_PORT:-5176}'
+        environment:
+            WWWUSER: '${WWWUSER:-1000}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        volumes:
+            - '.:/var/www/html'
+            - './docker/php/opcache.ini:/etc/php/8.5/cli/conf.d/99-opcache.ini:ro'
+        networks:
+            - sail
+        depends_on:
+            mysql:
+                condition: service_healthy
+    mysql:
+        image: 'mysql:8.4'
+        ports:
+            - '${FORWARD_DB_PORT:-3309}:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+            MYSQL_EXTRA_OPTIONS: '${MYSQL_EXTRA_OPTIONS:-}'
+        volumes:
+            - 'sail-mysql:/var/lib/mysql'
+            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
+            interval: 5s
+            retries: 20
+            timeout: 5s
+    stripe-cli:
+        image: 'stripe/stripe-cli:v1.54.1'
+        command: 'listen --forward-to http://laravel.test/stripe/webhook --events payment_intent.succeeded,payment_intent.payment_failed'
+        environment:
+            STRIPE_API_KEY: '${STRIPE_SECRET:-}'
+            STRIPE_CLI_TELEMETRY_OPTOUT: 1
+        networks:
+            - sail
+        depends_on:
+            - laravel.test
+
+networks:
+    sail:
+        driver: bridge
+
+volumes:
+    sail-mysql:
+        driver: local
